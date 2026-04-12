@@ -1,0 +1,23 @@
+//
+//  Unwyze.xcconfig
+//  Unwyze
+//
+//  Created by Saagar Jha on 4/12/26.
+//
+
+ASSETCATALOG_COMPILER_APPICON_NAME = Unwyze
+CODE_SIGN_ENTITLEMENTS = $(TARGET_NAME)/$(TARGET_NAME).entitlements
+INFOPLIST_KEY_LSApplicationCategoryType = public.app-category.medical
+INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = Unwyze uses Bluetooth to connect to your scale.
+INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = Unwyze does not read clinical records.
+INFOPLIST_KEY_NSHealthShareUsageDescription = Unwyze does not read health data.
+INFOPLIST_KEY_NSHealthUpdateUsageDescription = Unwyze saves your measurements in the Health app.
+INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES
+INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES
+INFOPLIST_KEY_UILaunchScreen_Generation = YES
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks
+PRODUCT_BUNDLE_IDENTIFIER = com.saagarjha.Unwyze
+PRODUCT_NAME = $(TARGET_NAME)
+TARGETED_DEVICE_FAMILY = 1,2

@@ -1,0 +1,120 @@
+{
+  "fill-specializations" : [
+    {
+      "value" : {
+        "solid" : "display-p3:0.83742,0.83742,0.83742,1.00000"
+      }
+    },
+    {
+      "appearance" : "dark",
+      "value" : "automatic"
+    }
+  ],
+  "groups" : [
+    {
+      "blend-mode" : "plus-lighter",
+      "blur-material" : null,
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "Units.png",
+          "name" : "Units",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              111.71589466881392,
+              -384
+            ]
+          }
+        },
+        {
+          "glass" : true,
+          "image-name" : "Weight.png",
+          "name" : "Weight",
+          "position" : {
+            "scale" : 0.8,
+            "translation-in-points" : [
+              0,
+              -384
+            ]
+          }
+        }
+      ],
+      "lighting" : "combined",
+      "name" : "Display",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "layers" : [
+        {
+          "image-name" : "Electrode.png",
+          "name" : "Electrode",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -288,
+              -224
+            ]
+          }
+        },
+        {
+          "image-name" : "Electrode.png",
+          "name" : "Electrode",
+          "opacity" : 1,
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              288,
+              -224
+            ]
+          }
+        },
+        {
+          "image-name" : "Electrode.png",
+          "name" : "Electrode",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -288,
+              288
+            ]
+          }
+        },
+        {
+          "image-name" : "Electrode.png",
+          "name" : "Electrode",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              288,
+              288
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Electrodes",
+      "opacity" : 0.5,
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

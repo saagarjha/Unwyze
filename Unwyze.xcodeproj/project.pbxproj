@@ -1,0 +1,184 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXFileReference section */
+		498465202F8A7AB300F94E98 /* Unwyze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Unwyze.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		498465222F8A7AB300F94E98 /* Unwyze */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Unwyze;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4984651D2F8A7AB300F94E98 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		498465172F8A7AB300F94E98 = {
+			isa = PBXGroup;
+			children = (
+				498465222F8A7AB300F94E98 /* Unwyze */,
+				498465212F8A7AB300F94E98 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		498465212F8A7AB300F94E98 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				498465202F8A7AB300F94E98 /* Unwyze.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4984651F2F8A7AB300F94E98 /* Unwyze */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4984652B2F8A7AB300F94E98 /* Build configuration list for PBXNativeTarget "Unwyze" */;
+			buildPhases = (
+				4984651C2F8A7AB300F94E98 /* Sources */,
+				4984651D2F8A7AB300F94E98 /* Frameworks */,
+				4984651E2F8A7AB300F94E98 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				498465222F8A7AB300F94E98 /* Unwyze */,
+			);
+			name = Unwyze;
+			packageProductDependencies = (
+			);
+			productName = Unwyze;
+			productReference = 498465202F8A7AB300F94E98 /* Unwyze.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		498465182F8A7AB300F94E98 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2650;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					4984651F2F8A7AB300F94E98 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+				};
+			};
+			buildConfigurationList = 4984651B2F8A7AB300F94E98 /* Build configuration list for PBXProject "Unwyze" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 498465172F8A7AB300F94E98;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 498465212F8A7AB300F94E98 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4984651F2F8A7AB300F94E98 /* Unwyze */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4984651E2F8A7AB300F94E98 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4984651C2F8A7AB300F94E98 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		498465292F8A7AB300F94E98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 498465222F8A7AB300F94E98 /* Unwyze */;
+			baseConfigurationReferenceRelativePath = Debug.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		4984652A2F8A7AB300F94E98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 498465222F8A7AB300F94E98 /* Unwyze */;
+			baseConfigurationReferenceRelativePath = Release.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		4984652C2F8A7AB300F94E98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 498465222F8A7AB300F94E98 /* Unwyze */;
+			baseConfigurationReferenceRelativePath = Unwyze.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		4984652D2F8A7AB300F94E98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 498465222F8A7AB300F94E98 /* Unwyze */;
+			baseConfigurationReferenceRelativePath = Unwyze.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4984651B2F8A7AB300F94E98 /* Build configuration list for PBXProject "Unwyze" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				498465292F8A7AB300F94E98 /* Debug */,
+				4984652A2F8A7AB300F94E98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4984652B2F8A7AB300F94E98 /* Build configuration list for PBXNativeTarget "Unwyze" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4984652C2F8A7AB300F94E98 /* Debug */,
+				4984652D2F8A7AB300F94E98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 498465182F8A7AB300F94E98 /* Project object */;
+}

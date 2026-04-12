@@ -1,0 +1,12 @@
+//
+//  Deployment.xcconfig
+//  Unwyze
+//
+//  Created by Saagar Jha on 4/12/26.
+//
+
+CODE_SIGN_STYLE = Automatic
+CURRENT_PROJECT_VERSION = 1
+DEVELOPMENT_TEAM = X4A9GH5NN2
+IPHONEOS_DEPLOYMENT_TARGET = 26.5
+MARKETING_VERSION = 0.1

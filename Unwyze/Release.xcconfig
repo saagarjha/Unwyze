@@ -1,0 +1,13 @@
+//
+//  Release.xcconfig
+//  Unwyze
+//
+//  Created by Saagar Jha on 4/12/26.
+//
+
+#include "Shared.xcconfig"
+
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+ENABLE_NS_ASSERTIONS = NO
+SWIFT_COMPILATION_MODE = wholemodule
+VALIDATE_PRODUCT = YES
