@@ -7,6 +7,7 @@
 
 ASSETCATALOG_COMPILER_APPICON_NAME = Unwyze
 CODE_SIGN_ENTITLEMENTS = $(TARGET_NAME)/$(TARGET_NAME).entitlements
+INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO
 INFOPLIST_KEY_LSApplicationCategoryType = public.app-category.medical
 INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = Unwyze uses Bluetooth to connect to your scale.
 INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = Unwyze does not read clinical records.
