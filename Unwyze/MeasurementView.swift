@@ -246,7 +246,7 @@ struct MeasurementView: View {
 		saved = false
 		measurementTask = Task {
 			do {
-				for try await status in WyzeScale.measure(user: profile.profile!) {
+				for try await status in WyzeScale.measure(user: profile.profile!, unit: Locale.current.measurementSystem == .metric ? .kg : .lb) {
 					measurementStatus = status
 				}
 			} catch {
