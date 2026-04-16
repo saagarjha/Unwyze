@@ -523,7 +523,7 @@ struct API {
 	}
 }
 
-func run(script: URL, arguments: [String]? = nil) throws -> String {
+func run(script: URL, arguments: [String] = []) throws -> String {
 	let output = Pipe()
 	let process = Process()
 	process.executableURL = script
