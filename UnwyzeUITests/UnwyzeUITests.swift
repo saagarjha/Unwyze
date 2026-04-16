@@ -12,7 +12,7 @@ final class UnwyzeUITests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
-		app.launchEnvironment["UI_TEST"] = "1"
+		app.launchEnvironment["UI_TESTING"] = "1"
     }
 
     @MainActor
