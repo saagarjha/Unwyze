@@ -6,11 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		496515412F8D195B00D7091B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 498465182F8A7AB300F94E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4984651F2F8A7AB300F94E98;
+			remoteInfo = Unwyze;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		4965153B2F8D195B00D7091B /* UnwyzeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnwyzeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		498465202F8A7AB300F94E98 /* Unwyze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Unwyze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		4965153C2F8D195B00D7091B /* UnwyzeUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UnwyzeUITests;
+			sourceTree = "<group>";
+		};
 		498465222F8A7AB300F94E98 /* Unwyze */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Unwyze;
@@ -19,6 +35,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		496515382F8D195B00D7091B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4984651D2F8A7AB300F94E98 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				498465222F8A7AB300F94E98 /* Unwyze */,
+				4965153C2F8D195B00D7091B /* UnwyzeUITests */,
 				498465212F8A7AB300F94E98 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				498465202F8A7AB300F94E98 /* Unwyze.app */,
+				4965153B2F8D195B00D7091B /* UnwyzeUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +73,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4965153A2F8D195B00D7091B /* UnwyzeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 496515452F8D195B00D7091B /* Build configuration list for PBXNativeTarget "UnwyzeUITests" */;
+			buildPhases = (
+				496515372F8D195B00D7091B /* Sources */,
+				496515382F8D195B00D7091B /* Frameworks */,
+				496515392F8D195B00D7091B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				496515422F8D195B00D7091B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4965153C2F8D195B00D7091B /* UnwyzeUITests */,
+			);
+			name = UnwyzeUITests;
+			packageProductDependencies = (
+			);
+			productName = UnwyzeUITests;
+			productReference = 4965153B2F8D195B00D7091B /* UnwyzeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		4984651F2F8A7AB300F94E98 /* Unwyze */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4984652B2F8A7AB300F94E98 /* Build configuration list for PBXNativeTarget "Unwyze" */;
@@ -80,6 +128,10 @@
 				LastSwiftUpdateCheck = 2650;
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
+					4965153A2F8D195B00D7091B = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 4984651F2F8A7AB300F94E98;
+					};
 					4984651F2F8A7AB300F94E98 = {
 						CreatedOnToolsVersion = 26.5;
 					};
@@ -100,11 +152,19 @@
 			projectRoot = "";
 			targets = (
 				4984651F2F8A7AB300F94E98 /* Unwyze */,
+				4965153A2F8D195B00D7091B /* UnwyzeUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		496515392F8D195B00D7091B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4984651E2F8A7AB300F94E98 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +175,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		496515372F8D195B00D7091B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4984651C2F8A7AB300F94E98 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +191,31 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		496515422F8D195B00D7091B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4984651F2F8A7AB300F94E98 /* Unwyze */;
+			targetProxy = 496515412F8D195B00D7091B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		496515432F8D195B00D7091B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 4965153C2F8D195B00D7091B /* UnwyzeUITests */;
+			baseConfigurationReferenceRelativePath = UnwyzeUITests.xcconfig;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		496515442F8D195B00D7091B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 4965153C2F8D195B00D7091B /* UnwyzeUITests */;
+			baseConfigurationReferenceRelativePath = UnwyzeUITests.xcconfig;
+			buildSettings = {
+			};
+			name = Release;
+		};
 		498465292F8A7AB300F94E98 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 498465222F8A7AB300F94E98 /* Unwyze */;
@@ -160,6 +251,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		496515452F8D195B00D7091B /* Build configuration list for PBXNativeTarget "UnwyzeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				496515432F8D195B00D7091B /* Debug */,
+				496515442F8D195B00D7091B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4984651B2F8A7AB300F94E98 /* Build configuration list for PBXProject "Unwyze" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

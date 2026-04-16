@@ -179,6 +179,10 @@ struct MeasurementView: View {
 			UserProfileView(showSettings: $showUserProfile, profile: $profile)
 		}
 		.onAppear {
+			guard ProcessInfo.processInfo.environment["UI_TESTING"] == nil else {
+				measurementStatus = .complete(.init(weight: 67, bodyFat: 42, muscleMass: 50, boneMass: 2.5, bodyWater: 50, protein: 15, leanMass: 50, visceralFat: 5, bmr: 1500, bodyAge: 25, bmi: 20, impedance: 500, battery: 100))
+				return
+			}
 			showUserProfile = profile.profile == nil
 		}
 		.onDisappear {
@@ -286,5 +290,5 @@ struct MeasurementView: View {
 }
 
 #Preview {
-	MeasurementView(measurementStatus: .complete(.init(weight: 67, bodyFat: 42, muscleMass: 50, boneMass: 2.5, bodyWater: 50, protein: 15, leanMass: 50, visceralFat: 5, bmr: 1500, bodyAge: 25, bmi: 20, impedance: 500, battery: 0)))
+	MeasurementView(measurementStatus: .complete(.init(weight: 67, bodyFat: 42, muscleMass: 50, boneMass: 2.5, bodyWater: 50, protein: 15, leanMass: 50, visceralFat: 5, bmr: 1500, bodyAge: 25, bmi: 20, impedance: 500, battery: 100)))
 }
