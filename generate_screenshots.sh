@@ -8,7 +8,7 @@ RESULT_BUNDLE="Screenshots-$DEVICE.xcresult"
 {
 	xcrun simctl boot "$DEVICE"
 	xcrun simctl bootstatus "$DEVICE"
-	xcrun simctl status_bar "$DEVICE" override --time 2007-01-09T17:41:00.000Z --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState discharging --batteryLevel 100
+	xcrun simctl status_bar "$DEVICE" override --time 2007-01-09T09:41:00.000-08:00 --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState discharging --batteryLevel 100
 	# We can't set the date for now, so hide it (FB22539899)
 	xcrun simctl spawn "$DEVICE" defaults write com.apple.UIKit StatusBarHidesDate -bool YES
 	xcodebuild test -project Unwyze.xcodeproj -scheme Unwyze -destination "platform=iOS Simulator,name=$DEVICE" -resultBundlePath "$RESULT_BUNDLE" -only-testing:UnwyzeUITests/UnwyzeUITests/testScreenshots
