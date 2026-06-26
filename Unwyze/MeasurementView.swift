@@ -16,6 +16,9 @@ struct MeasurementView: View {
 	var showUserProfile = false
 
 	@State
+	var showSexMigration = false
+
+	@State
 	var measurementStatus: MeasurementStatus?
 
 	@State
@@ -178,12 +181,24 @@ struct MeasurementView: View {
 		.sheet(isPresented: $showUserProfile) {
 			UserProfileView(showSettings: $showUserProfile, profile: $profile)
 		}
+		.alert(
+			"Historical Measurement Accuracy", isPresented: $showSexMigration,
+			actions: {
+				Button("OK") {
+					profile._migrateSex()
+				}
+			},
+			message: {
+				Text("Unwyze has migrated your profile to a new format that improves compatibility your Wyze Scale S. Sex-dependent results taken using earlier versions of this app may not have been accurate.")
+			}
+		)
 		.onAppear {
 			guard ProcessInfo.processInfo.environment["UI_TESTING"] == nil else {
 				measurementStatus = .complete(.init(weight: 67, bodyFat: 42, muscleMass: 50, boneMass: 2.5, bodyWater: 50, protein: 15, leanMass: 50, visceralFat: 5, bmr: 1500, bodyAge: 25, bmi: 20, impedance: 500, battery: 100))
 				return
 			}
 			showUserProfile = profile.profile == nil
+			showSexMigration = profile.profile != nil && profile._migratedSex != true
 		}
 		.onDisappear {
 			measurementTask?.cancel()

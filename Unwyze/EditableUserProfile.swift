@@ -42,6 +42,7 @@ struct EditableUserProfile: Codable {
 	var birthdate = Date.now
 	var height = Int?.none
 	var isAthlete = false
+	var _migratedSex: Bool? = true
 
 	var profile: UserProfile? {
 		guard let sex, let height else {
@@ -54,6 +55,16 @@ struct EditableUserProfile: Codable {
 			height: UInt8(height),
 			athlete: isAthlete
 		)
+	}
+	
+	mutating func _migrateSex() {
+		switch sex! {
+		case .male:
+			sex = .female
+		case .female:
+			sex = .male
+		}
+		_migratedSex = true
 	}
 }
 
