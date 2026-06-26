@@ -11,8 +11,8 @@ import Foundation
 // MARK: - Types
 
 enum Sex: UInt8 {
-	case male = 0
-	case female = 1
+	case female = 0
+	case male = 1
 }
 
 enum WeightUnit: UInt8 {
