@@ -151,25 +151,26 @@ enum WyzeScale {
 
 /// A type that can be read/written to a little-endian wire byte buffer.
 private protocol WireValue {
-	static var wireSize: Int { get }
-	init?(fromWire bytes: [UInt8])
+	var wireSize: Int { get }
+	init?(fromWire bytes: Span<UInt8>)
 	func wireBytes() -> [UInt8]
 }
 
 /// All fixed-width integers get LE wire encoding for free.
 extension WireValue where Self: FixedWidthInteger {
-	static var wireSize: Int { MemoryLayout<Self>.size }
+	var wireSize: Int { MemoryLayout<Self>.size }
 
-	init?(fromWire bytes: [UInt8]) {
-		guard bytes.count >= Self.wireSize else { return nil }
+	init?(fromWire bytes: Span<UInt8>) {
+		let size = MemoryLayout<Self>.size
+		guard bytes.count >= size else { return nil }
 		var raw: Self = 0
-		for i in 0..<Self.wireSize { raw |= Self(bytes[i]) << (i * 8) }
+		for i in 0..<size { raw |= Self(bytes[i]) << (i * 8) }
 		self = Self(littleEndian: raw)
 	}
 
 	func wireBytes() -> [UInt8] {
 		let le = self.littleEndian
-		return (0..<Self.wireSize).map { UInt8(truncatingIfNeeded: le >> ($0 * 8)) }
+		return (0..<wireSize).map { UInt8(truncatingIfNeeded: le >> ($0 * 8)) }
 	}
 }
 
@@ -178,39 +179,61 @@ extension UInt16: WireValue {}
 extension UInt32: WireValue {}
 
 extension InlineArray: WireValue where Element: WireValue {
-	static var wireSize: Int {
-		MemoryLayout<Self>.size / MemoryLayout<Element>.size * Element.wireSize
+	var wireSize: Int {
+		(0..<count).reduce(0) { $0 + self[$1].wireSize }
 	}
-	init?(fromWire bytes: [UInt8]) {
-		guard bytes.count >= Self.wireSize else { return nil }
-		self.init(repeating: Element(fromWire: [UInt8](repeating: 0, count: Element.wireSize))!)
-		let count = Self.wireSize / Element.wireSize
-		for i in 0..<count {
-			self[i] = Element(
-				fromWire: [UInt8](bytes[i * Element.wireSize..<(i + 1) * Element.wireSize]))!
+
+	init?(fromWire bytes: Span<UInt8>) {
+		let invalidValue = CocoaError(.coderReadCorrupt)
+		var offset = 0
+		do {
+			try self.init { _ in
+				guard let value = Element(fromWire: bytes.extracting(offset...)) else {
+					throw invalidValue
+				}
+				offset += value.wireSize
+				return value
+			}
+		} catch {
+			return nil
 		}
 	}
+
 	func wireBytes() -> [UInt8] {
-		let count = Self.wireSize / Element.wireSize
-		return (0..<count).flatMap { self[$0].wireBytes() }
+		(0..<count).flatMap { self[$0].wireBytes() }
 	}
 }
 
 /// Visits struct fields for encoding or decoding. Each call to `field()` is fully typed.
-private protocol FieldVisitor<Root> {
+private protocol FieldVisitor<Root>: ~Escapable {
 	associatedtype Root
+	@_lifetime(self: copy self)
 	mutating func field<T: WireValue>(_ keyPath: WritableKeyPath<Root, T>)
 }
 
 /// A type that declares its wire layout once via the visitor pattern.
 /// Both `decode` and `encode` are derived from the single `fields` definition.
-private protocol WireCodable {
+private protocol WireCodable: WireValue {
 	init()
-	static func fields<V: FieldVisitor<Self>>(_ visitor: inout V)
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ visitor: inout V)
 }
 
 extension WireCodable {
+	var wireSize: Int { encode().count }
+
+	init?(fromWire bytes: Span<UInt8>) {
+		self.init(from: bytes)
+	}
+
+	func wireBytes() -> [UInt8] {
+		encode()
+	}
+
 	init?(from bytes: [UInt8]) {
+		self.init(from: bytes.span)
+	}
+
+	init?(from bytes: Span<UInt8>) {
 		self.init()
 		var decoder = Decoder(target: self, bytes: bytes)
 		Self.fields(&decoder)
@@ -225,20 +248,27 @@ extension WireCodable {
 	}
 }
 
-private struct Decoder<Root>: FieldVisitor {
+private struct Decoder<Root>: FieldVisitor, ~Escapable {
 	var target: Root
-	let bytes: [UInt8]
+	let bytes: Span<UInt8>
 	var offset = 0
 	var failed = false
 
+	@_lifetime(copy bytes)
+	init(target: Root, bytes: Span<UInt8>) {
+		self.target = target
+		self.bytes = bytes
+	}
+
+	@_lifetime(self: copy self)
 	mutating func field<T: WireValue>(_ keyPath: WritableKeyPath<Root, T>) {
 		guard !failed else { return }
-		guard let value = T(fromWire: [UInt8](bytes[offset...])) else {
+		guard let value = T(fromWire: bytes.extracting(offset...)) else {
 			failed = true
 			return
 		}
 		target[keyPath: keyPath] = value
-		offset += T.wireSize
+		offset += value.wireSize
 	}
 }
 
@@ -277,7 +307,7 @@ private struct WeightData: WireCodable {
 	var bodyAge: UInt8 = 0
 	var bmi: UInt16 = 0  // ÷10.0
 
-	static func fields<V: FieldVisitor<Self>>(_ v: inout V) {
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
 		v.field(\.battery)
 		v.field(\.unit)
 		v.field(\.userId)
@@ -333,7 +363,7 @@ private protocol ScaleCommand {
 
 private struct EmptyPayload: WireCodable {
 	init() {}
-	static func fields<V: FieldVisitor<Self>>(_ v: inout V) {}
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {}
 }
 
 private struct SyncTime: ScaleCommand {
@@ -382,7 +412,7 @@ private struct TimePayload: WireCodable {
 	var timestamp: UInt32 = 0
 	var osType: UInt8 = 0x02  // iOS
 
-	static func fields<V: FieldVisitor<Self>>(_ v: inout V) {
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
 		v.field(\.timestamp)
 		v.field(\.osType)
 	}
@@ -404,7 +434,7 @@ private struct UserPayload: WireCodable {
 	var onlyWeight: UInt8 = 0
 	var lastImp: UInt16 = 0
 
-	static func fields<V: FieldVisitor<Self>>(_ v: inout V) {
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
 		v.field(\.userId)
 		v.field(\.weight)
 		v.field(\.sex)
@@ -428,7 +458,7 @@ private struct UserPayload: WireCodable {
 private struct UnitPayload: WireCodable {
 	var unit: UInt8 = 0
 
-	static func fields<V: FieldVisitor<Self>>(_ v: inout V) {
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
 		v.field(\.unit)
 	}
 
@@ -442,7 +472,7 @@ private struct UnitPayload: WireCodable {
 private struct BoolPayload: WireCodable {
 	var value: UInt8 = 0
 
-	static func fields<V: FieldVisitor<Self>>(_ v: inout V) {
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
 		v.field(\.value)
 	}
 
@@ -456,7 +486,7 @@ private struct BoolPayload: WireCodable {
 private struct BroadcastTimePayload: WireCodable {
 	var value: UInt16 = 0  // app sends 1 (power save on) or 0 (off)
 
-	static func fields<V: FieldVisitor<Self>>(_ v: inout V) {
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
 		v.field(\.value)
 	}
 
@@ -470,7 +500,7 @@ private struct BroadcastTimePayload: WireCodable {
 private struct StatusPayload: WireCodable {
 	var status: UInt8 = 0  // 0 = success
 
-	static func fields<V: FieldVisitor<Self>>(_ v: inout V) {
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
 		v.field(\.status)
 	}
 
@@ -561,7 +591,7 @@ private struct WyzeProtocol {
 		var iterator = channel.received.makeAsyncIterator()
 		guard let response = await iterator.next(),
 			response.count >= 4,
-			let remotePublicKey = UInt32(fromWire: [UInt8](response[4...]))
+			let remotePublicKey = UInt32(fromWire: response.span.extracting(4...))
 		else {
 			throw ScaleError.notFound
 		}
@@ -624,12 +654,12 @@ private struct WyzeProtocol {
 
 	private func parseTLV(_ bytes: [UInt8]) -> (command: UInt16, data: [UInt8])? {
 		guard bytes.count >= 4,
-			UInt16(fromWire: [UInt8](bytes[0...])) != nil,  // tag
-			let lengthRaw = UInt16(fromWire: [UInt8](bytes[2...]))
+			UInt16(fromWire: bytes.span) != nil,  // tag
+			let lengthRaw = UInt16(fromWire: bytes.span.extracting(2...))
 		else { return nil }
 		let length = Int(lengthRaw)
 		guard length >= 2, bytes.count >= 4 + length,
-			let commandId = UInt16(fromWire: [UInt8](bytes[4...]))
+			let commandId = UInt16(fromWire: bytes.span.extracting(4...))
 		else { return nil }
 		let valueData = length > 2 ? [UInt8](bytes[6..<4 + length]) : []
 		return (commandId, valueData)
@@ -690,10 +720,8 @@ private enum XXTEA {
 	private static func processBlock(
 		_ bytes: inout [UInt8], at offset: Int, key: [UInt32], encrypt: Bool
 	) {
-		let slice0: [UInt8] = .init(bytes[offset..<offset + 4])
-		let slice1: [UInt8] = .init(bytes[offset + 4..<offset + 8])
-		var v0 = UInt32(fromWire: slice0)!
-		var v1 = UInt32(fromWire: slice1)!
+		var v0 = UInt32(fromWire: bytes.span.extracting(offset..<offset + 4))!
+		var v1 = UInt32(fromWire: bytes.span.extracting(offset + 4..<offset + 8))!
 
 		if encrypt {
 			var sum: UInt32 = 0
@@ -739,8 +767,7 @@ private enum XXTEA {
 			padded[i] = key[i]
 		}
 		return (0..<4).map { i -> UInt32 in
-			let slice: [UInt8] = .init(padded[i * 4..<i * 4 + 4])
-			return UInt32(fromWire: slice)!
+			UInt32(fromWire: padded.span.extracting(i * 4..<i * 4 + 4))!
 		}
 	}
 
