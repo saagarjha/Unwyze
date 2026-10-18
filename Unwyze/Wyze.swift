@@ -64,6 +64,20 @@ enum ScaleError: LocalizedError {
 	}
 }
 
+private enum ScaleModel: UInt8 {
+	case s = 1
+	case x = 2
+	case ultra = 3
+
+	init?(manufacturerData: Data) {
+		guard let advertisement = ScaleAdvertisement(from: [UInt8](manufacturerData)),
+			advertisement.companyId == 0x0870,
+			advertisement.mid == 7
+		else { return nil }
+		self.init(rawValue: advertisement.pid)
+	}
+}
+
 // MARK: - Public API
 
 enum MeasurementStatus {
@@ -89,7 +103,7 @@ enum WyzeScale {
 					continuation.yield(.scanning)
 					guard
 						let peripheral = try await Peripheral.scan().first(where: {
-							$0.name?.hasPrefix("WL_SC") == true
+							$0.model != nil
 						})
 					else {
 						throw ScaleError.notFound
@@ -115,8 +129,14 @@ enum WyzeScale {
 					continuation.yield(.settingUp)
 					proto.send(SyncTime(payload: .init(date: .now)))
 					proto.send(DeleteAllUsers())
-					proto.send(UpdateUser(payload: .init(from: user)))
-					proto.send(SetCurrentUser(payload: .init(from: user)))
+					if peripheral.model == .ultra {
+						let payload = UltraUserPayload(user: .init(from: user))
+						proto.send(UpdateUltraUser(payload: payload))
+						proto.send(SetCurrentUltraUser(payload: payload))
+					} else {
+						proto.send(UpdateUser(payload: .init(from: user)))
+						proto.send(SetCurrentUser(payload: .init(from: user)))
+					}
 					proto.send(SetUnit(payload: .init(unit: unit)))
 					proto.send(SetHello(payload: .init(true)))
 					proto.send(SetBroadcastTime(payload: .init(enabled: true)))
@@ -283,6 +303,24 @@ private struct Encoder<Root>: FieldVisitor {
 
 // MARK: - Wire Packets
 
+private struct ScaleAdvertisement: WireCodable {
+	var companyId: UInt16 = 0
+	var mid: UInt8 = 0
+	var pid: UInt8 = 0
+	var mac: InlineArray<6, UInt8> = .init(repeating: 0)
+	var flags: UInt8 = 0
+	var version: UInt8 = 0
+
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
+		v.field(\.companyId)
+		v.field(\.mid)
+		v.field(\.pid)
+		v.field(\.mac)
+		v.field(\.flags)
+		v.field(\.version)
+	}
+}
+
 /// CMD_CUR_WEIGHT_DATA (0xA808) response from scale during measurement.
 private struct WeightData: WireCodable {
 	var battery: UInt8 = 0
@@ -386,6 +424,16 @@ private struct SetCurrentUser: ScaleCommand {
 	var payload: UserPayload
 }
 
+private struct UpdateUltraUser: ScaleCommand {
+	static let id: UInt16 = 0xA81A
+	var payload: UltraUserPayload
+}
+
+private struct SetCurrentUltraUser: ScaleCommand {
+	static let id: UInt16 = 0xA819
+	var payload: UltraUserPayload
+}
+
 private struct SetUnit: ScaleCommand {
 	static let id: UInt16 = 0xA804
 	var payload: UnitPayload
@@ -452,6 +500,50 @@ private struct UserPayload: WireCodable {
 		self.age = profile.age
 		self.height = profile.height
 		self.athleteMode = profile.athlete ? 1 : 0
+	}
+}
+
+private struct UltraUserPayload: WireCodable {
+	var user = UserPayload()
+	var goalType: UInt8 = 1  // weight
+	var goalCurrent: UInt16 = 0
+	var goalTarget: UInt16 = 0
+	var iconType: UInt8 = 1
+	var icon: UInt8 = 0
+	var nickname = Nickname("Unwyze")
+
+	static func fields<V: FieldVisitor<Self> & ~Escapable>(_ v: inout V) {
+		v.field(\.user)
+		v.field(\.goalType)
+		v.field(\.goalCurrent)
+		v.field(\.goalTarget)
+		v.field(\.iconType)
+		v.field(\.icon)
+		v.field(\.nickname)
+	}
+}
+
+private struct Nickname: WireValue {
+	var value: String
+
+	var wireSize: Int { 1 + value.utf8.count }
+
+	init(_ value: String) {
+		self.value = value
+	}
+
+	init?(fromWire bytes: Span<UInt8>) {
+		guard !bytes.isEmpty else { return nil }
+		let length = Int(bytes[0])
+		guard bytes.count >= 1 + length,
+			let value = try? UTF8Span(validating: bytes.extracting(1..<(1 + length)))
+		else { return nil }
+		self.value = String(copying: value)
+	}
+
+	func wireBytes() -> [UInt8] {
+		let bytes = [UInt8](value.utf8)
+		return [UInt8(bytes.count)] + bytes
 	}
 }
 
@@ -782,7 +874,7 @@ private enum XXTEA {
 // MARK: - Bluetooth
 
 private struct Peripheral {
-	let name: String?
+	let model: ScaleModel?
 	fileprivate let cbPeripheral: CBPeripheral
 	fileprivate let central: CentralDelegate
 
@@ -899,8 +991,8 @@ private class CentralDelegate: NSObject, CBCentralManagerDelegate, @unchecked Se
 		advertisementData: [String: Any],
 		rssi: NSNumber
 	) {
-		let name = peripheral.name ?? advertisementData[CBAdvertisementDataLocalNameKey] as? String
-		scanContinuation?.yield(Peripheral(name: name, cbPeripheral: peripheral, central: self))
+		let model = (advertisementData[CBAdvertisementDataManufacturerDataKey] as? Data).flatMap(ScaleModel.init)
+		scanContinuation?.yield(Peripheral(model: model, cbPeripheral: peripheral, central: self))
 	}
 
 	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
